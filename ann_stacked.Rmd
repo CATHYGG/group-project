@@ -1,0 +1,33 @@
+---
+title: "ann"
+author: "cathy"
+date: "2024-03-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## stacked ann
+### load
+```{r}
+library(caret)
+library(neuralnet)
+
+hr_train_ann <- read.csv("hr_train_ann.csv")
+hr_test_ann <- read.csv("hr_test_ann.csv")
+
+
+```
+### build 
+
+```{r}
+annmodel <- neuralnet(left~., data = hr_train_ann, hidden = c(3,2))
+ann_pred <- predict (annmodel, hr_test_ann)
+ann_pred_bin <- ifelse(ann_pred >= 0.5,1,0)
+
+confusionMatrix(as.factor(ann_pred_bin), as.factor(hr_test_ann$left), positive = "1")
+write.csv(ann_pred,"ann_pred.csv")
+```
+
